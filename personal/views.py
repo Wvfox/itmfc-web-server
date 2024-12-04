@@ -34,12 +34,12 @@ def operator_list(request):
 
 @api_view(['GET', 'PUT', 'DELETE'])
 @parser_classes([JSONParser])
-def operator_detail(request, pk: int):
+def operator_detail(request, username: str):
     """
     View(GET), update(PUT) or delete(DELETE) a operator.
     """
     try:
-        operator = Operator.objects.get(pk=pk)
+        operator = Operator.objects.get(username=username)
         data = request.data
     except Operator.DoesNotExist:
         return HttpResponse(status=404)
@@ -49,6 +49,10 @@ def operator_detail(request, pk: int):
         return JsonResponse(serializer.data)
 
     elif request.method == 'PUT':
+        if not data.get('username'):
+            data['username'] = operator.username
+        if not data.get('name'):
+            data['name'] = operator.name
         serializer = OperatorSerializer(operator, data=data)
         try:
             if serializer.is_valid():
@@ -91,12 +95,12 @@ def printer_list(request):
 
 @api_view(['GET', 'PUT', 'DELETE'])
 @parser_classes([JSONParser])
-def printer_detail(request, pk: int):
+def printer_detail(request, ip: str):
     """
     View(GET), update(PUT) or delete(DELETE) a printer.
     """
     try:
-        printer = Printer.objects.get(pk=pk)
+        printer = Printer.objects.get(ip_printer=ip)
         data = request.data
     except Printer.DoesNotExist:
         return HttpResponse(status=404)
@@ -106,6 +110,10 @@ def printer_detail(request, pk: int):
         return JsonResponse(serializer.data)
 
     elif request.method == 'PUT':
+        if not data.get('ip_printer'):
+            data['ip_printer'] = printer.ip_printer
+        if not data.get('model_printer'):
+            data['model_printer'] = printer.model_printer
         serializer = PrinterSerializer(printer, data=data)
         try:
             if serializer.is_valid():
@@ -154,12 +162,12 @@ def workstation_list(request):
 
 @api_view(['GET', 'PUT', 'DELETE'])
 @parser_classes([JSONParser])
-def workstation_detail(request, pk: int):
+def workstation_detail(request, name: str):
     """
     View(GET), update(PUT) or delete(DELETE) a workstation.
     """
     try:
-        workstation = Workstation.objects.get(pk=pk)
+        workstation = Workstation.objects.get(name_desktop=name)
         data = request.data
     except Workstation.DoesNotExist:
         return HttpResponse(status=404)
@@ -169,6 +177,8 @@ def workstation_detail(request, pk: int):
         return JsonResponse(serializer.data)
 
     elif request.method == 'PUT':
+        if not data.get('name_desktop'):
+            data['name_desktop'] = workstation.name_desktop
         serializer = WorkstationSerializer(workstation, data=data)
         try:
             if serializer.is_valid():
@@ -185,22 +195,23 @@ def workstation_detail(request, pk: int):
 
 @api_view(['PUT', 'DELETE'])
 @parser_classes([JSONParser])
-def workstation_printer(request, pk: int):
+def workstation_printer(request, name: str, ip: str):
     """
     Add(PUT) or remove(DELETE) printer of workstation.
     """
     try:
-        workstation = Workstation.objects.get(pk=pk)
-        data = request.data
+
+        workstation = Workstation.objects.get(name_desktop=name)
     except Workstation.DoesNotExist:
+        print(name)
         return HttpResponse(status=404)
 
     if request.method == 'PUT':
-        workstation.printers.add(Printer.objects.get(pk=data['id_printer']))
+        workstation.printers.add(Printer.objects.get(ip_printer=ip))
         workstation.save()
         return JsonResponse(WorkstationSerializer(workstation).data)
 
     elif request.method == 'DELETE':
-        workstation.printers.remove(Printer.objects.get(pk=data['id_printer']))
+        workstation.printers.remove(Printer.objects.get(ip_printer=ip))
         workstation.save()
         return JsonResponse(WorkstationSerializer(workstation).data)
