@@ -25,8 +25,21 @@ def application_list(request):
         serializer = ApplicationSerializer(data=data)
         try:
             if serializer.is_valid():
-                serializer.save()
-                return JsonResponse(serializer.data, status=201)
+                try:
+                    serializer.save()
+                    application = Application.objects.get(pk=serializer.data['id'])
+                    if data.get('operator_username'):
+                        application.operator = Operator.objects.get(
+                            username=data['operator_username']
+                        )
+                    if data.get('workstation_name'):
+                        application.workstation = Workstation.objects.get(
+                            name_desktop=data['workstation_name']
+                        )
+                    application.save()
+                    return JsonResponse(ApplicationSerializer(application).data, status=201)
+                except Exception as ex:
+                    return JsonResponse(ex, status=400)
             return JsonResponse(serializer.errors, status=400)
         except IntegrityError:
             return HttpResponse(status=406)
@@ -52,8 +65,21 @@ def application_detail(request, pk: int):
         serializer = ApplicationSerializer(application, data=data)
         try:
             if serializer.is_valid():
-                serializer.save()
-                return JsonResponse(serializer.data)
+                try:
+                    serializer.save()
+                    application = Application.objects.get(pk=serializer.data['id'])
+                    if data.get('operator_username'):
+                        application.operator = Operator.objects.get(
+                            username=data['operator_username']
+                        )
+                    if data.get('workstation_name'):
+                        application.workstation = Workstation.objects.get(
+                            name_desktop=data['workstation_name']
+                        )
+                    application.save()
+                    return JsonResponse(ApplicationSerializer(application).data, status=201)
+                except Exception as ex:
+                    return JsonResponse(ex, status=400)
             return JsonResponse(serializer.errors, status=400)
         except IntegrityError:
             return HttpResponse(status=406)
@@ -61,4 +87,3 @@ def application_detail(request, pk: int):
     elif request.method == 'DELETE':
         application.delete()
         return HttpResponse(status=204)
-

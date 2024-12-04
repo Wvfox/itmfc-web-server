@@ -1,6 +1,5 @@
 from django.db import models
 
-from config.utilities import UUIDFileStorage
 from personal.models import Workstation, Operator
 
 
@@ -22,11 +21,16 @@ class Application(models.Model):
         null=True
     )
     description = models.TextField('Description', default='', blank=True)
-    screenshot = models.ImageField(
-        upload_to='screenshot_application/%d-%m-%Y',
-        storage=UUIDFileStorage(),
+    # screenshot = models.ImageField(
+    #     upload_to='screenshot_application/%d-%m-%Y',
+    #     storage=UUIDFileStorage(),
+    #     blank=True,
+    #     null=True,
+    # )
+    screenshot_url = models.TextField(
+        'Screenshot',
+        default='',
         blank=True,
-        null=True,
     )
     updated_at = models.DateField('Date of updating', auto_now=True)
     created_at = models.DateField('Date of creation', auto_now_add=True)

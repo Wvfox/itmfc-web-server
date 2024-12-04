@@ -2,7 +2,8 @@ from django.db import models
 
 
 class Operator(models.Model):
-    name = models.CharField('Name', max_length=64)
+    username = models.SlugField('Username', max_length=64, unique=True)
+    name = models.CharField('Name', max_length=128)
     tag = models.CharField('Tag', max_length=64, unique=True, blank=True, null=True)
     birthday = models.DateField('Birthday', max_length=32, blank=True, null=True)
     is_head = models.BooleanField('Head', default=False)
@@ -12,10 +13,10 @@ class Operator(models.Model):
     created_at = models.DateField('Date of creation', auto_now_add=True)
 
     class Meta:
-        ordering = ['name']
+        ordering = ['username']
 
     def __str__(self):
-        return self.name
+        return self.username
 
 
 class History(models.Model):
@@ -45,7 +46,7 @@ class Printer(models.Model):
 
 
 class Workstation(models.Model):
-    name_desktop = models.CharField('Name desktop', max_length=64, unique=True)
+    name_desktop = models.SlugField('Name desktop', max_length=32, unique=True)
     ip_desktop = models.CharField('IP-address desktop', max_length=32, unique=True, blank=True, null=True)
     mac_desktop = models.CharField('MAC-address desktop', max_length=32, unique=True, blank=True, null=True)
     printers = models.ManyToManyField(Printer, blank=True)

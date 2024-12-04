@@ -141,9 +141,9 @@ def workstation_list(request):
             if serializer.is_valid():
                 serializer.save()
                 # Add printer to workstation
-                if data.get('id_printer'):
+                if data.get('ip_printer'):
                     current_workstation = Workstation.objects.get(pk=serializer.data['id'])
-                    current_workstation.printers.add(Printer.objects.get(pk=data['id_printer']))
+                    current_workstation.printers.add(Printer.objects.get(ip_printer=data['ip_printer']))
                     current_workstation.save()
                     return JsonResponse(WorkstationSerializer(current_workstation).data, status=201)
                 return JsonResponse(serializer.data, status=201)
