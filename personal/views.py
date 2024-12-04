@@ -4,7 +4,6 @@ from rest_framework.parsers import JSONParser
 from rest_framework.decorators import api_view, parser_classes
 
 from .serializers import *
-from .models import *
 
 
 '====== OPERATOR ======'
