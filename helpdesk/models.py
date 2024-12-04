@@ -9,9 +9,19 @@ class Application(models.Model):
     user_name = models.CharField('User name', max_length=64, blank=True, null=True)
     user_tag = models.CharField('Tag name', max_length=64, blank=True, null=True)
     user_location = models.CharField('Location', max_length=32, blank=True, null=True)
-    operator = models.ManyToManyField(Operator, blank=True)
-    workstation = models.ManyToManyField(Workstation, blank=True)
-    description = models.TextField('Description')
+    operator = models.ForeignKey(
+        Operator,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True
+    )
+    workstation = models.ForeignKey(
+        Workstation,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True
+    )
+    description = models.TextField('Description', blank=True, null=True)
     screenshot = models.ImageField(
         upload_to='screenshot_application/%d-%m-%Y',
         storage=UUIDFileStorage(),
