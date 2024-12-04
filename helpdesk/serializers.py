@@ -5,8 +5,8 @@ from personal.serializers import OperatorSerializer, WorkstationSerializer
 
 
 class ApplicationSerializer(serializers.ModelSerializer):
-    operator = OperatorSerializer(required=False, many=True)
-    workstation = WorkstationSerializer(required=False, many=True)
+    operator = OperatorSerializer(required=False)
+    workstation = WorkstationSerializer(required=False)
 
     class Meta:
         model = Application

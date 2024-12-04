@@ -21,7 +21,7 @@ class Application(models.Model):
         blank=True,
         null=True
     )
-    description = models.TextField('Description', blank=True, null=True)
+    description = models.TextField('Description', default='', blank=True)
     screenshot = models.ImageField(
         upload_to='screenshot_application/%d-%m-%Y',
         storage=UUIDFileStorage(),
